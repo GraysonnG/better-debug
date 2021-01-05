@@ -4,6 +4,7 @@ import basemod.BaseMod
 import basemod.interfaces.PostInitializeSubscriber
 import com.blanktheevil.betterdebug.ui.DebugInfo
 import com.blanktheevil.betterdebug.ui.DebugInfoPanel
+import com.blanktheevil.betterdebug.utils.BetterDebugControls
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer
 import com.megacrit.cardcrawl.core.GameCursor
 import com.megacrit.cardcrawl.core.Settings
@@ -13,6 +14,7 @@ import java.util.function.Supplier
 class BetterDebug : PostInitializeSubscriber{
   companion object {
     lateinit var debugInfoPanel: DebugInfoPanel
+    lateinit var debugControls: BetterDebugControls
 
     var isPaused = false
 
@@ -24,5 +26,6 @@ class BetterDebug : PostInitializeSubscriber{
 
   override fun receivePostInitialize() {
     debugInfoPanel = DebugInfoPanel()
+    debugControls = BetterDebugControls()
   }
 }

@@ -54,7 +54,7 @@ class DebugInfoPanel {
   fun render(sb: SpriteBatch) {
     if (Settings.isDebug) {
       sb.color = Color.WHITE
-      FontHelper.cardTitleFont.data.setScale(.7f)
+      FontHelper.cardTitleFont.data.setScale(.65f)
 
       infos.forEachIndexed { index, it ->
         val title = it.title
@@ -70,7 +70,7 @@ class DebugInfoPanel {
           FontHelper.cardTitleFont,
           "$title $del $body",
           30f * Settings.scale,
-          Settings.HEIGHT.div(5f).times(4).minus(20f * Settings.scale * index),
+          Settings.HEIGHT.div(5f).times(4).minus(16f * Settings.scale * index),
           Color.WHITE
         )
       }
@@ -98,6 +98,7 @@ class DebugInfoPanel {
     addDebugInfo("resolution") { "${Settings.WIDTH}x${Settings.HEIGHT}" }
     addDebugInfo("scale") { "${Settings.scale}" }
     addDebugInfo("framerate") { "${getCurrentFramerate()}/${Settings.MAX_FPS}" }
+    addDebugInfo("paused") { "${BetterDebug.isPaused}" }
 
     addEmptyLine()
 

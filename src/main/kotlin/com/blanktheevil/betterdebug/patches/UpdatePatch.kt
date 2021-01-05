@@ -13,7 +13,10 @@ object UpdatePatch {
   @JvmStatic
   fun updateDebugInfo(dungeon: AbstractDungeon): SpireReturn<Void> {
     BetterDebug.debugInfoPanel.update()
+    BetterDebug.debugControls.update()
 
-    return SpireReturn.Continue()
+    return if (BetterDebug.isPaused && !BetterDebug.debugControls.stepForward.isJustPressed) {
+       SpireReturn.Return(null)
+    } else SpireReturn.Continue()
   }
 }
