@@ -3,6 +3,7 @@ package com.blanktheevil.betterdebug.utils
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.blanktheevil.betterdebug.BetterDebug
+import com.blanktheevil.betterdebug.patches.HitboxPatch
 import com.blanktheevil.betterdebug.patches.InputActionPatch
 import com.blanktheevil.betterdebug.ui.DebugInfoPanel
 import com.megacrit.cardcrawl.core.Settings
@@ -12,6 +13,7 @@ class BetterDebugControls {
 
   private val toggleDebug = InputAction(Input.Keys.D)
   private val togglePause = InputAction(Input.Keys.P)
+  private val toggleHBTexture = InputAction(Input.Keys.H)
   val stepForward = InputAction(Input.Keys.PERIOD)
   private val shiftL = InputAction(Input.Keys.SHIFT_LEFT)
   private val shiftR = InputAction(Input.Keys.SHIFT_RIGHT)
@@ -30,10 +32,16 @@ class BetterDebugControls {
     DebugInfoPanel.addTitleLine("Toggle Debug - D")
     DebugInfoPanel.addTitleLine("Pause Game - P")
     DebugInfoPanel.addTitleLine("Step Forward - PERIOD")
+    DebugInfoPanel.addTitleLine("Swap Hitbox Texture - H")
 
     if (toggleDebug.isJustPressed) {
       Settings.isDebug = !Settings.isDebug
       InputActionPatch.suppressedInputs.add(Input.Keys.D)
+    }
+
+    if (toggleHBTexture.isJustPressed) {
+      HitboxPatch.showAltTexture = !HitboxPatch.showAltTexture
+      InputActionPatch.suppressedInputs.add(Input.Keys.H)
     }
 
     if (shouldBePaused) {

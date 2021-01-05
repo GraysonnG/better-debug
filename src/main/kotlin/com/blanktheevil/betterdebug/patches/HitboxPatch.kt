@@ -1,6 +1,8 @@
 package com.blanktheevil.betterdebug.patches
 
 import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.GL30
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch
@@ -17,6 +19,11 @@ object HitboxPatch {
     Color(1f,0f,0f,0.2f)
   }
 
+  private val hbTexture1 = ImageMaster.DEBUG_HITBOX_IMG
+  private val hbTexture2 = ImageMaster.WHITE_SQUARE_IMG
+
+  var showAltTexture = true
+
   @SpirePrefixPatch
   @JvmStatic
   fun renderPatch(instance: Hitbox, sb: SpriteBatch): SpireReturn<Void> {
@@ -26,11 +33,14 @@ object HitboxPatch {
       var shouldRenderText = false
 
       if (instance.hovered) {
-        sb.color = Color.LIME.cpy().also { it.a = 0.3f }
+        sb.color = Color.LIME
         shouldRenderText = true
       }
 
-      sb.draw(ImageMaster.WHITE_SQUARE_IMG, instance.x, instance.y, instance.width, instance.height)
+      val texture = if(showAltTexture) hbTexture2 else hbTexture1
+      sb.color = sb.color.cpy().also { it.a = if(showAltTexture) .2f else 1f }
+      if (showAltTexture) sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)
+      sb.draw(texture, instance.x, instance.y, instance.width, instance.height)
 
       if (shouldRenderText) {
         val preSize = FontHelper.cardTitleFont.data.scaleX

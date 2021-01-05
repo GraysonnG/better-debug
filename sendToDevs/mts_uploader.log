@@ -1,12 +1,20 @@
-Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.Main main
+Jan 05, 2021 5:04:19 PM com.megacrit.moduploader.Main main
 FINE: programStr=/home/grayson/.local/share/Steam/steamapps/common/SlayTheSpire/mod-uploader.jar
-Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.cli.CreateCMD run
-FINE: The workspace path 'better-debug' does not exist. Creating it...
-Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.cli.CreateCMD run
-FINE: Successfully copied image to 'better-debug/image.jpg'
-Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.cli.CreateCMD run
-FINE: Successfully copied readme to 'better-debug/image.jpg'
-Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.cli.CreateCMD run
-FINE: The content path 'better-debug/content' does not exist. Creating it...
-Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.cli.CreateCMD run
-FINE: Initialization success!
+Jan 05, 2021 5:04:20 PM com.megacrit.moduploader.Uploader writeSteamAppIDFile
+FINE: The file 'steam_appid.txt' does not exist. Creating it...
+Jan 05, 2021 5:04:20 PM com.megacrit.moduploader.Uploader connectToSteam
+INFO: ACCOUNT ID: 81805055
+Jan 05, 2021 5:04:20 PM com.megacrit.moduploader.Uploader handleLicenseAgreement
+FINE: needsToAcceptWLA=false
+Jan 05, 2021 5:04:20 PM com.megacrit.moduploader.Uploader$Callback onCreateItem
+INFO: Workshop item created successfully
+Jan 05, 2021 5:04:20 PM com.megacrit.moduploader.Uploader updateItemInfo
+INFO: Submitting workshop item update
+Jan 05, 2021 5:04:22 PM com.megacrit.moduploader.Uploader lambda$updateItemInfo$0
+INFO: UploadingContent .
+Jan 05, 2021 5:04:24 PM com.megacrit.moduploader.Uploader handleLicenseAgreement
+FINE: needsToAcceptWLA=false
+Jan 05, 2021 5:04:24 PM com.megacrit.moduploader.Uploader$Callback onSubmitItemUpdate
+FINE: Successfully updated workshop item
+Jan 05, 2021 5:04:24 PM com.megacrit.moduploader.Uploader openWorkshopItemInSteamBrowser
+FINE: Opening url=steam://url/CommunityFilePage/2351301825 in browser...
