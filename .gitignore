@@ -1,0 +1,5 @@
+target/
+.idea/
+*.iml
+/steam/config.json
+/steam/content/*.jar

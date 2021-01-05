@@ -1,0 +1,10 @@
+{
+  "modid": "better-debug",
+  "name": "Better Debug",
+  "author_list": ["Blank The Evil"],
+  "description": "Adds better debug info for modders.",
+  "dependencies": ["basemod"],
+  "version": "0.0.1",
+  "sts_version": "07-01-2019",
+  "mts_version": "3.11.0"
+}

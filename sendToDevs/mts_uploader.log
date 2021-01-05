@@ -1,0 +1,12 @@
+Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.Main main
+FINE: programStr=/home/grayson/.local/share/Steam/steamapps/common/SlayTheSpire/mod-uploader.jar
+Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.cli.CreateCMD run
+FINE: The workspace path 'better-debug' does not exist. Creating it...
+Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.cli.CreateCMD run
+FINE: Successfully copied image to 'better-debug/image.jpg'
+Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.cli.CreateCMD run
+FINE: Successfully copied readme to 'better-debug/image.jpg'
+Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.cli.CreateCMD run
+FINE: The content path 'better-debug/content' does not exist. Creating it...
+Jan 05, 2021 4:02:19 PM com.megacrit.moduploader.cli.CreateCMD run
+FINE: Initialization success!
