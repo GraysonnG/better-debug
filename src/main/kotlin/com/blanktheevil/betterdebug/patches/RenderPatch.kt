@@ -14,5 +14,6 @@ object RenderPatch {
   fun renderDebugInfo(dungeon: AbstractDungeon, sb: SpriteBatch) {
     BetterDebug.debugInfoPanel.render(sb)
     BetterDebug.debugInfoPanel.renderCursorInfo(sb)
+    BetterDebug.profilerPanel.render(sb)
   }
 }

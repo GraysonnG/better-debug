@@ -121,6 +121,8 @@ class DebugInfoPanel {
       addTitleLine("==============================")
       addEmptyLine()
     }
+
+    addTitleLine("=== Debug Controls - Shift + [key] ===",)
   }
 
   private fun getCurrentFramerate(): Float {

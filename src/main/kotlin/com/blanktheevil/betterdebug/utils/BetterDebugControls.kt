@@ -28,7 +28,6 @@ class BetterDebugControls {
   private fun debugControlsUpdate() {
     InputActionPatch.suppressedInputs.clear()
     DebugInfoPanel.addLines(
-      "=== Debug Controls - Shift + [key] ===",
       "Toggle Debug - D",
       "Pause Game - P",
       "Step Forward - PERIOD",
