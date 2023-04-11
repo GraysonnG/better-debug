@@ -7,7 +7,7 @@
     <description>Adds better debug info for modders.</description>
     <groupId>com.blanktheevil</groupId>
     <artifactId>better-debug</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.3</version>
 
     <properties>
         <steamFolder>E:/SteamLibrary/</steamFolder>
