@@ -1,0 +1,10 @@
+{
+  "steamPublishedID": "2351301825",
+  "title": "Better Debug",
+  "description": "",
+  "visibility": "public",
+  "changeNote": "0.0.3:\n\nChanges:\n- Added the ability to profile methods using the @ProfileMethod annotation.\n\n\n",
+  "tags": [
+    "qol"
+  ]
+}
