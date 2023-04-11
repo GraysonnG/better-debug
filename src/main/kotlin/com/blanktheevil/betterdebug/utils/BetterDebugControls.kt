@@ -27,12 +27,12 @@ class BetterDebugControls {
 
   private fun debugControlsUpdate() {
     InputActionPatch.suppressedInputs.clear()
-
-    DebugInfoPanel.addTitleLine("=== Debug Controls - Shift + [key] ===")
-    DebugInfoPanel.addTitleLine("Toggle Debug - D")
-    DebugInfoPanel.addTitleLine("Pause Game - P")
-    DebugInfoPanel.addTitleLine("Step Forward - PERIOD")
-    DebugInfoPanel.addTitleLine("Swap Hitbox Texture - H")
+    DebugInfoPanel.addLines(
+      "Toggle Debug - D",
+      "Pause Game - P",
+      "Step Forward - PERIOD",
+      "Swap Hitbox Texture - H"
+    )
 
     if (toggleDebug.isJustPressed) {
       Settings.isDebug = !Settings.isDebug
