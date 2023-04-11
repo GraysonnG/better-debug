@@ -10,7 +10,7 @@
     <version>0.0.1</version>
 
     <properties>
-        <steamFolder>/home/grayson/.local/share/Steam/</steamFolder>
+        <steamFolder>E:/SteamLibrary/</steamFolder>
         <modsFolder>${steamFolder}steamapps/workshop/content/646570/</modsFolder>
         <stsPath>${steamFolder}steamapps/common/SlayTheSpire/</stsPath>
         <stsVersion>07-01-2019</stsVersion>
@@ -180,6 +180,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

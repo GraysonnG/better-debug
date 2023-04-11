@@ -38,6 +38,11 @@ class DebugInfoPanel {
         override fun updateValue(): String = ""
       })
     }
+
+    @JvmStatic
+    fun addLines(vararg lines: String) {
+      lines.forEach(this::addTitleLine)
+    }
   }
 
   private val infos = mutableListOf<DebugInfo>()
@@ -99,17 +104,18 @@ class DebugInfoPanel {
     addDebugInfo("scale") { "${Settings.scale}" }
     addDebugInfo("framerate") { "${getCurrentFramerate()}/${Settings.MAX_FPS}" }
     addDebugInfo("paused") { "${BetterDebug.isPaused}" }
+    addDebugInfo("roomPhase") {"${AbstractDungeon.getCurrRoom()?.phase ?: "room is null"}"}
 
     addEmptyLine()
 
     if (AbstractDungeon.getCurrRoom() != null && AbstractDungeon.getCurrRoom().phase == AbstractRoom.RoomPhase.COMBAT) {
       addTitleLine("=== ActionManager Visualizer ===")
       if (AbstractDungeon.actionManager.currentAction != null) {
-        addTitleLine(">>> ${AbstractDungeon.actionManager.currentAction::class.java.simpleName}")
+        addTitleLine(">>> ${AbstractDungeon.actionManager.currentAction::class.simpleName ?: "Anonymous"}")
       }
 
       AbstractDungeon.actionManager.actions.forEach {
-        addTitleLine(it::class.java.simpleName)
+        addTitleLine(it::class.simpleName ?: "Anonymous")
       }
 
       addTitleLine("==============================")
