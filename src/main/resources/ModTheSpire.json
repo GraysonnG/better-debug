@@ -4,7 +4,7 @@
   "author_list": ["Blank The Evil"],
   "description": "Adds better debug info for modders.",
   "dependencies": ["basemod"],
-  "version": "0.0.3",
+  "version": "0.0.5",
   "sts_version": "12-18-2022",
   "mts_version": "3.30.3"
 }

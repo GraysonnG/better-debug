@@ -51,7 +51,14 @@ object SimpleProfilerPatches {
   }
 
   private fun List<ClassInfo>.convertToCtClassList(ctBehavior: CtBehavior): List<CtClass> {
-    return map { ctBehavior.declaringClass.classPool.get(it.className) }
+    return mapNotNull {
+      try {
+        ctBehavior.declaringClass.classPool.get(it.className)
+      } catch (e: Exception) {
+        e.printStackTrace()
+        null
+      }
+    }
   }
 
   private fun List<CtClass>.flattenDeclaredBehaviors(): List<CtBehavior> {
@@ -65,13 +72,16 @@ object SimpleProfilerPatches {
   private fun List<CtBehavior>.applyPatch() {
     forEach {
       println("Patching ${it.longName}...")
+      try {
+        val behaviorName = "${it.declaringClass.simpleName}.${it.name}"
+        val prefixCall = "${this::class.java.name}.startProfile(\"$behaviorName\");\n"
+        val postfixCall = "${this::class.java.name}.endProfile(\"$behaviorName\");\n"
 
-      val behaviorName = "${it.declaringClass.simpleName}.${it.name}"
-      val prefixCall = "${this::class.java.name}.startProfile(\"$behaviorName\");\n"
-      val postfixCall = "${this::class.java.name}.endProfile(\"$behaviorName\");\n"
-
-      it.prefix(prefixCall)
-      it.postfix(postfixCall)
+        it.prefix(prefixCall)
+        it.postfix(postfixCall)
+      } catch (e: Exception) {
+        e.printStackTrace()
+      }
     }
   }
 
