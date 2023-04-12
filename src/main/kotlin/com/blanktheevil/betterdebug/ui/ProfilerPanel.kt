@@ -12,10 +12,17 @@ class ProfilerPanel {
       sb.color = Color.WHITE
       FontHelper.cardTitleFont.data.setScale(.65f)
 
+      val message = "=== Method Profiler ${
+        if (SimpleProfilerPatches.profilerEnabled) 
+          "- use Annotation @ProfileMethod" 
+        else
+          "DISABLED check logs"
+      } ==="
+
       FontHelper.renderFontRightAligned(
         sb,
         FontHelper.cardTitleFont,
-        "=== Method Profiler - use Annotation @ProfileMethod ===",
+        message,
         Settings.WIDTH.minus(30f * Settings.scale),
         Settings.HEIGHT.div(5f).times(4),
         Color.WHITE

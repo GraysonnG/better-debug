@@ -20,6 +20,7 @@ import kotlin.collections.ArrayList
 object SimpleProfilerPatches {
 
   internal val profiledMethods = mutableMapOf<String, Profiler>()
+  internal var profilerEnabled = false
 
   @SpireRawPatch
   @JvmStatic
@@ -27,11 +28,17 @@ object SimpleProfilerPatches {
   fun profilerPatch(ctBehavior: CtBehavior) {
     val classes = ClassFinder().getAllModClasses()
 
-    classes
-      .convertToCtClassList(ctBehavior)
-      .flattenDeclaredBehaviors()
-      .annotationFilter()
-      .applyPatch()
+    try {
+      classes
+        .convertToCtClassList(ctBehavior)
+        .flattenDeclaredBehaviors()
+        .annotationFilter()
+        .applyPatch()
+
+      profilerEnabled = true
+    } catch (e: Exception) {
+      e.printStackTrace()
+    }
   }
 
   @Suppress("unused")
