@@ -3,7 +3,7 @@
   "title": "Better Debug",
   "description": "",
   "visibility": "public",
-  "changeNote": "0.0.3:\n\nChanges:\n- Added the ability to profile methods using the @ProfileMethod annotation.\n\n\n",
+  "changeNote": "0.0.4:\n\nChanges:\n- Let the @ProfileMethod annoation be used in more cases.\n\n\n",
   "tags": [
     "qol"
   ]

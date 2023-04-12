@@ -32,31 +32,3 @@ class BetterDebug : PostInitializeSubscriber{
     profilerPanel = ProfilerPanel()
   }
 }
-
-
-interface Thing {
-  fun yeet()
-}
-
-abstract class TestObject @ProfileMethod constructor() : Thing {
-
-  init {
-    var hellWorld = "Hello "
-    hellWorld += "World"
-  }
-
-  @ProfileMethod
-  abstract fun OOPS()
-
-  @ProfileMethod
-  fun oopsButDeclared() {
-    var hellWorld = "Hello "
-    hellWorld += "World"
-  }
-
-  @ProfileMethod
-  override fun yeet() {
-    var hellWorld = "Hello "
-    hellWorld += "World"
-  }
-}
