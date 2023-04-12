@@ -7,12 +7,14 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2
 import com.evacipated.cardcrawl.modthespire.lib.SpireRawPatch
 import com.megacrit.cardcrawl.core.CardCrawlGame
 import javassist.CtBehavior
+import javassist.CtConstructor
 import org.clapper.util.classutil.*
 import org.jetbrains.kotlin.utils.doNothing
 import java.io.File
 import java.math.RoundingMode
 import java.net.URISyntaxException
 import java.text.DecimalFormat
+import kotlin.collections.ArrayList
 
 @SpirePatch2(clz = CardCrawlGame::class, method = SpirePatch.CONSTRUCTOR)
 object SimpleProfilerPatches {
@@ -30,21 +32,24 @@ object SimpleProfilerPatches {
         ctBehavior.declaringClass.classPool.get(it.className)
       }
       .flatMap {
-        it.declaredMethods.toMutableList()
+        it.declaredBehaviors.toMutableList()
       }
       .filter {
-        it.hasAnnotation(ProfileMethod::class.java)
+        it.hasAnnotation(ProfileMethod::class.java) && !it.isEmpty
       }
       .forEach {
-        val methodName = "${it.declaringClass.simpleName}.${it.name}"
+        val behaviorName = "${it.declaringClass.simpleName}.${it.name}"
+        val prefixCall = "${this::class.java.name}.startProfile(\"$behaviorName\");\n"
+        val postfixCall = "${this::class.java.name}.endProfile(\"$behaviorName\");\n"
 
-        val prefixCall = "${this::class.java.name}.startProfile(\"$methodName\");\n"
-        val postfixCall = "${this::class.java.name}.endProfile(\"$methodName\");\n"
+        println("Patching ${it.longName}...")
 
-        println(prefixCall)
-        println(postfixCall)
+        val methodToCall = if (it is CtConstructor)
+          it::insertBeforeBody
+        else
+          it::insertBefore
 
-        it.insertBefore(prefixCall)
+        methodToCall(prefixCall)
         it.insertAfter(postfixCall)
       }
   }
@@ -99,11 +104,6 @@ object SimpleProfilerPatches {
   }
 
   fun ClassFinder.getAllSTSClasses(): ArrayList<ClassInfo> {
-    val filter = AndClassFilter(
-      NotClassFilter(InterfaceOnlyClassFilter()),
-      NotClassFilter(AbstractClassFilter()),
-    )
-
     Loader.MODINFOS
       .filter { it.jarURL != null }
       .forEach {
@@ -115,7 +115,7 @@ object SimpleProfilerPatches {
       }
 
     return ArrayList<ClassInfo>().also {
-      this.findClasses(it, filter)
+      this.findClasses(it, null)
     }
   }
 }
