@@ -1,19 +1,19 @@
 package com.blanktheevil.betterdebug.patches
 
 import com.blanktheevil.betterdebug.ProfileMethod
+import com.blanktheevil.betterdebug.Profiler
 import com.evacipated.cardcrawl.modthespire.Loader
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2
 import com.evacipated.cardcrawl.modthespire.lib.SpireRawPatch
 import com.megacrit.cardcrawl.core.CardCrawlGame
 import javassist.CtBehavior
+import javassist.CtClass
 import javassist.CtConstructor
 import org.clapper.util.classutil.*
 import org.jetbrains.kotlin.utils.doNothing
 import java.io.File
-import java.math.RoundingMode
 import java.net.URISyntaxException
-import java.text.DecimalFormat
 import kotlin.collections.ArrayList
 
 @SpirePatch2(clz = CardCrawlGame::class, method = SpirePatch.CONSTRUCTOR)
@@ -25,33 +25,13 @@ object SimpleProfilerPatches {
   @JvmStatic
   @Suppress("unused")
   fun profilerPatch(ctBehavior: CtBehavior) {
-    val classes = ClassFinder().getAllSTSClasses()
+    val classes = ClassFinder().getAllModClasses()
 
     classes
-      .map {
-        ctBehavior.declaringClass.classPool.get(it.className)
-      }
-      .flatMap {
-        it.declaredBehaviors.toMutableList()
-      }
-      .filter {
-        it.hasAnnotation(ProfileMethod::class.java) && !it.isEmpty
-      }
-      .forEach {
-        val behaviorName = "${it.declaringClass.simpleName}.${it.name}"
-        val prefixCall = "${this::class.java.name}.startProfile(\"$behaviorName\");\n"
-        val postfixCall = "${this::class.java.name}.endProfile(\"$behaviorName\");\n"
-
-        println("Patching ${it.longName}...")
-
-        val methodToCall = if (it is CtConstructor)
-          it::insertBeforeBody
-        else
-          it::insertBefore
-
-        methodToCall(prefixCall)
-        it.insertAfter(postfixCall)
-      }
+      .convertToCtClassList(ctBehavior)
+      .flattenDeclaredBehaviors()
+      .annotationFilter()
+      .applyPatch()
   }
 
   @Suppress("unused")
@@ -70,40 +50,42 @@ object SimpleProfilerPatches {
     profiledMethods[methodName]?.setEndTime()
   }
 
-  class Profiler(
-    private var startTimeNs: Long,
-  ) {
-    private var endTimeNs: Long = startTimeNs
-    private val calls = mutableListOf<Long>()
+  private fun List<ClassInfo>.convertToCtClassList(ctBehavior: CtBehavior): List<CtClass> {
+    return map { ctBehavior.declaringClass.classPool.get(it.className) }
+  }
 
-    fun setStartTime() {
-      startTimeNs = System.nanoTime()
-    }
+  private fun List<CtClass>.flattenDeclaredBehaviors(): List<CtBehavior> {
+    return flatMap { it.declaredBehaviors.toList() }
+  }
 
-    fun setEndTime() {
-      endTimeNs = System.nanoTime()
-      calls.add(endTimeNs.minus(startTimeNs))
-      if (calls.size > 120) calls.removeFirstOrNull()
-    }
+  private fun List<CtBehavior>.annotationFilter(): List<CtBehavior> {
+    return filter { it.hasAnnotation(ProfileMethod::class.java) && !it.isEmpty }
+  }
 
-    @Suppress("unused")
-    fun getElapsedNanoSeconds(): Long {
-      return endTimeNs.minus(startTimeNs)
-    }
+  private fun List<CtBehavior>.applyPatch() {
+    forEach {
+      println("Patching ${it.longName}...")
 
-    fun getAverageMs(): String {
-      val format = DecimalFormat("#.##")
-      format.roundingMode = RoundingMode.CEILING
+      val behaviorName = "${it.declaringClass.simpleName}.${it.name}"
+      val prefixCall = "${this::class.java.name}.startProfile(\"$behaviorName\");\n"
+      val postfixCall = "${this::class.java.name}.endProfile(\"$behaviorName\");\n"
 
-      return if (calls.isEmpty()) {
-        "???"
-      } else {
-        format.format(calls.average() / 1000.0)
-      }
+      it.prefix(prefixCall)
+      it.postfix(postfixCall)
     }
   }
 
-  fun ClassFinder.getAllSTSClasses(): ArrayList<ClassInfo> {
+  private fun CtBehavior.prefix(src: String) =
+    (if (this is CtConstructor) {
+      this::insertBeforeBody
+    } else {
+      this::insertBefore
+    })(src)
+
+  private fun CtBehavior.postfix(src: String) =
+    this.insertAfter(src)
+
+  private fun ClassFinder.getAllModClasses(): List<ClassInfo> {
     Loader.MODINFOS
       .filter { it.jarURL != null }
       .forEach {

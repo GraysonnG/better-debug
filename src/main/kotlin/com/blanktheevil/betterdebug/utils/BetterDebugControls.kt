@@ -21,8 +21,7 @@ class BetterDebugControls {
 
   private var shouldBePaused = false
   private var advanceTimer = 0f
-
-
+  
   fun update() = if (shiftDown) debugControlsUpdate() else {}
 
   private fun debugControlsUpdate() {
