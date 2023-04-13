@@ -1,5 +1,6 @@
 package com.blanktheevil.betterdebug.patches
 
+import basemod.ReflectionHacks
 import com.blanktheevil.betterdebug.ProfileMethod
 import com.blanktheevil.betterdebug.Profiler
 import com.evacipated.cardcrawl.modthespire.Loader
@@ -7,26 +8,44 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch2
 import com.evacipated.cardcrawl.modthespire.lib.SpireRawPatch
 import com.megacrit.cardcrawl.core.CardCrawlGame
-import javassist.CtBehavior
-import javassist.CtClass
-import javassist.CtConstructor
+import javassist.*
 import org.clapper.util.classutil.*
 import org.jetbrains.kotlin.utils.doNothing
 import java.io.File
+import java.lang.reflect.Method
 import java.net.URISyntaxException
 import kotlin.collections.ArrayList
 
 @SpirePatch2(clz = CardCrawlGame::class, method = SpirePatch.CONSTRUCTOR)
 object SimpleProfilerPatches {
+  private const val isProfilerEnabledMethodName = "__betterDebug_isProfilerEnabled"
 
   internal val profiledMethods = mutableMapOf<String, Profiler>()
-  internal var profilerEnabled = false
+
+  private var reflectedMethod: Method? = null
+
+  val profilerEnabled: Boolean
+    get() {
+      return try {
+        if (reflectedMethod == null) {
+          reflectedMethod = CardCrawlGame::class.java.run {
+            declaredMethods.first { it.name == isProfilerEnabledMethodName }
+          }
+        }
+
+        return reflectedMethod?.invoke(null) as Boolean
+      } catch (e: Exception) {
+        e.printStackTrace()
+        false
+      }
+    }
 
   @SpireRawPatch
   @JvmStatic
   @Suppress("unused")
   fun profilerPatch(ctBehavior: CtBehavior) {
     val classes = ClassFinder().getAllModClasses()
+    var enableProfiler = false
 
     try {
       classes
@@ -35,10 +54,12 @@ object SimpleProfilerPatches {
         .annotationFilter()
         .applyPatch()
 
-      profilerEnabled = true
+      enableProfiler = true
     } catch (e: Exception) {
       e.printStackTrace()
     }
+
+    addIsProfilerEnabledToCardCrawlGame(ctBehavior, enableProfiler)
   }
 
   @Suppress("unused")
@@ -55,6 +76,24 @@ object SimpleProfilerPatches {
   @JvmStatic
   fun endProfile(methodName: String) {
     profiledMethods[methodName]?.setEndTime()
+  }
+
+  private fun addIsProfilerEnabledToCardCrawlGame(ctBehavior: CtBehavior, enableProfiler: Boolean) {
+    val cardCrawlGameCtClass = ctBehavior.declaringClass.classPool.get(
+      ctBehavior.declaringClass.name
+    )
+
+    val isProfilerEnabledCtMethod = CtNewMethod.make(
+      Modifier.STATIC or Modifier.PUBLIC,
+      CtClass.booleanType,
+      isProfilerEnabledMethodName,
+      null,
+      null,
+      "return ${enableProfiler};",
+      cardCrawlGameCtClass
+    )
+
+    cardCrawlGameCtClass.addMethod(isProfilerEnabledCtMethod)
   }
 
   private fun List<ClassInfo>.convertToCtClassList(ctBehavior: CtBehavior): List<CtClass> {
